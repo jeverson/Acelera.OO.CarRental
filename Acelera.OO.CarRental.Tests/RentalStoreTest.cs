@@ -1,3 +1,6 @@
+using Acelera.OO.CarRental.AdditionalItems;
+using Acelera.OO.CarRental.Pricing;
+using Acelera.OO.CarRental.Vehicles;
 using CarRental;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -7,18 +10,18 @@ namespace Acelera.OO.CarRental.Tests
     public class RentalStoreTest
     {
         [TestMethod]
-        public void WhenRequestedToRentWithNoAdditionalsForOneDay_Rent_ShouldReturnARentalOperation() 
+        public void WhenRequestedWithNoAdditionalsForOneDay_Rent_ShouldReturnARental() 
         {
-            ICarType carType = new BasicTestCarType { DailyPrice = 50M, KmPrice = 0.5M };
-
+            IVehicle carType = new PopularFamilyCar();
             var request = new RentalRequest
             {
                 CarType = carType,
                 Days = 1,
                 Kilometers = 100
             };
-
-            var rental = new RentalStore().Rent(request);
+            var factory = PricingFactory.Create();
+            
+            var rental = new RentalStore(factory).Rent(request);
 
             Assert.AreEqual(1, rental.Days);
             Assert.AreEqual(50M, rental.TotalDailyPrice);
@@ -27,9 +30,29 @@ namespace Acelera.OO.CarRental.Tests
         }
         
         [TestMethod]
-        public void WhenRequestedToRentWithNoAdditionalsForMultipleDays_Rent_ShouldReturnARentalOperation() 
+        public void WhenRequestedWithNoAdditionalsForMultipleDays_Rent_ShouldIncludePricesForTheDays() 
         {
-            ICarType carType = new BasicTestCarType { DailyPrice = 50M, KmPrice = 0.5M };
+            IVehicle carType = new PopularFamilyCar();
+            var request = new RentalRequest
+            {
+                CarType = carType,
+                Days = 4,
+                Kilometers = 600
+            };
+            var factory = PricingFactory.Create();
+
+            var rental = new RentalStore(factory).Rent(request);
+
+            Assert.AreEqual(4, rental.Days);
+            Assert.AreEqual(200M, rental.TotalDailyPrice);
+            Assert.AreEqual(300M, rental.EstimatedTotalKmPrice);
+            Assert.AreEqual(500M, rental.TotalPrice);
+        }
+
+        [TestMethod]
+        public void WhenRequestedWithAdditionalsForMultipleDays_Rent_ShouldIncludeAdditionalsInThePrice() 
+        {
+            var carType = new PopularFamilyCar();
 
             var request = new RentalRequest
             {
@@ -37,8 +60,10 @@ namespace Acelera.OO.CarRental.Tests
                 Days = 4,
                 Kilometers = 600
             };
+            request.AddAccessory(new CarSeat());
 
-            var rental = new RentalStore().Rent(request);
+            var pricingFactory = PricingFactory.Create();
+            var rental = new RentalStore(pricingFactory).Rent(request);
 
             Assert.AreEqual(4, rental.Days);
             Assert.AreEqual(200M, rental.TotalDailyPrice);

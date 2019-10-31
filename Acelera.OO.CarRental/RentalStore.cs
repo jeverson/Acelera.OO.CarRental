@@ -1,16 +1,25 @@
-﻿using System;
-using Acelera.OO.CarRental;
+﻿using Acelera.OO.CarRental;
+using Acelera.OO.CarRental.Pricing;
 
 namespace CarRental
 {
     public class RentalStore
     {
+        private IPricingFactory pricingFactory;
+
+        public RentalStore(IPricingFactory pricingFactory)
+        {
+            this.pricingFactory = pricingFactory;
+        }
+
         public RentalResponse Rent(RentalRequest request)
         {
-            return new RentalResponse { 
-                Days = request.Days, 
-                EstimatedTotalKmPrice = request.Kilometers * request.CarType.KmPrice, 
-                TotalDailyPrice = request.Days * request.CarType.DailyPrice
+            var pricing = pricingFactory.GetPolicyFor(request.CarType);
+
+            return new RentalResponse {
+                Days = request.Days,
+                EstimatedTotalKmPrice = request.Kilometers * pricing.GetKmPrice(),
+                TotalDailyPrice = request.Days * pricing.GetDailyRentPrice()
             };
         }
     }
