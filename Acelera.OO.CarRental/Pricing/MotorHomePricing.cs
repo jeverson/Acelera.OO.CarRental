@@ -2,18 +2,18 @@
 
 namespace Acelera.OO.CarRental.Pricing
 {
-    public class PopularFamilyCarPricing : IPricingPolicy
+    public class MotorHomePricing : IPricingPolicy
     {
         public bool AppliesTo(IVehicle vehicle) 
-            => vehicle is PopularFamilyCar;
+            => vehicle is MotorHome;
 
         public decimal GetAdditionalItemPrice()
         {
             throw new System.NotImplementedException();
         }
 
-        public decimal GetDailyRentPrice() => 50M;
+        public decimal GetDailyRentPrice() => 0;
 
-        public decimal GetKmPrice() => 0.5M;
+        public decimal GetKmPrice() => 0;
     }
 }

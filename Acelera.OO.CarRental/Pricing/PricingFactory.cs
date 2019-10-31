@@ -1,12 +1,26 @@
 ﻿using Acelera.OO.CarRental.Vehicles;
+using System.Linq;
 
 namespace Acelera.OO.CarRental.Pricing
 {
     public class PricingFactory : IPricingFactory
     {
         private static PricingFactory _instance;
+        private IPricingPolicy[] _pricingPolicies;
 
-        private PricingFactory() { }
+        private PricingFactory()
+        {
+            InitPricingPolicies();
+        }
+
+        private void InitPricingPolicies()
+        {
+            _pricingPolicies = new IPricingPolicy[]
+            {
+                new MotorHomePricing(),
+                new PopularFamilyCarPricing()
+            };
+        }
 
         public static IPricingFactory Create()
         {
@@ -16,9 +30,7 @@ namespace Acelera.OO.CarRental.Pricing
             return _instance;
         }
 
-        public IPricingPolicy GetPolicyFor(IVehicle vehicle)
-        {
-            return new PopularFamilyCarPricing();
-        }
+        public IPricingPolicy GetPolicyFor(IVehicle vehicle) 
+            => _pricingPolicies.First(p => p.AppliesTo(vehicle));
     }
 }
