@@ -1,6 +1,6 @@
 ﻿namespace Acelera.OO.CarRental.AdditionalItems
 {
-    public interface IAdditionalItem
+    public class Gps : IGeneralOptionalItem
     {
     }
 }

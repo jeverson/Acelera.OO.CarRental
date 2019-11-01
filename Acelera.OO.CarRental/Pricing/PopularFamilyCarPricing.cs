@@ -1,19 +1,24 @@
-﻿using Acelera.OO.CarRental.Vehicles;
+﻿using Acelera.OO.CarRental.AdditionalItems;
+using Acelera.OO.CarRental.Vehicles;
 
 namespace Acelera.OO.CarRental.Pricing
 {
-    public class PopularFamilyCarPricing : IPricingPolicy
+    public class PopularFamilyCarPricing : PricingPolicyBase<IGeneralOptionalItem>
     {
-        public bool AppliesTo(IVehicle vehicle) 
-            => vehicle is PopularFamilyCar;
-
-        public decimal GetAdditionalItemPrice()
+        protected override PriceTable<IGeneralOptionalItem> GetPriceTable()
         {
-            throw new System.NotImplementedException();
+            var _priceTable = new PriceTable<IGeneralOptionalItem>();
+            _priceTable.AddItem(typeof(CarSeat), 65);
+            _priceTable.AddItem(typeof(Gps), 25);
+            return _priceTable;
         }
 
-        public decimal GetDailyRentPrice() => 50M;
+        public override bool AppliesTo(IVehicle vehicle) 
+            => vehicle is PopularFamilyCar;
 
-        public decimal GetKmPrice() => 0.5M;
+        public override decimal GetDailyRentPrice() => 50M;
+
+        public override decimal GetKmPrice() => 0.5M;
+
     }
 }

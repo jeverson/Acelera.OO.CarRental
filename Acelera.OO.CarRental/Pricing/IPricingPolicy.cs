@@ -1,4 +1,5 @@
-﻿using Acelera.OO.CarRental.Vehicles;
+﻿using Acelera.OO.CarRental.AdditionalItems;
+using Acelera.OO.CarRental.Vehicles;
 
 namespace Acelera.OO.CarRental
 {
@@ -6,7 +7,7 @@ namespace Acelera.OO.CarRental
     {
         decimal GetKmPrice();
         decimal GetDailyRentPrice();
-        decimal GetAdditionalItemPrice();
+        decimal GetItemPrice(IAdditionalItem item);
         bool AppliesTo(IVehicle vehicle);
     }
 }
